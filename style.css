@@ -122,7 +122,7 @@ body{
   display: block;
   flex: 1 1 0;
   min-width: 220px;
-  background: linear-gradient(135deg, #2b0f66 0%, #1b224d 100%);
+  background: linear-gradient(135deg, #6802b6 0%, #2b0f66 100%);
   border-radius: 1rem;
   padding: 1.25rem 1.5rem;
   text-align: left;
@@ -141,31 +141,46 @@ body{
   font-weight: 500;
   opacity: .95;
 }
-.box button{
+
+.box .btn{
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.12);
   color: #fff;
-  padding: 0.5rem 0.85rem;
+  padding: 0.6rem 0;
+  width: 160px;          
+  max-width: 80%;         
+  text-align: center;
   border-radius: 0.6rem;
   cursor: pointer;
   font-weight: 700;
+  display: block;        
+  margin: 0.5rem auto 0;
+  text-decoration: none;
 }
-.box:hover{
-  transform: translateY(-10px);
-  box-shadow: 0 18px 40px rgba(10,7,30,0.6);
+
+.boxes > .box:nth-child(1) .btn,
+.boxes > .box:nth-child(2) .btn,
+.boxes > .box:nth-child(3) .btn{
+  margin-left: auto;
+  margin-right: auto;
 }
-.boxes > .box:nth-child(1){
-  text-align: center;
+/* hover & keyboard focus: lift the box and increase shadow */
+.box:hover,
+.box:focus-within,
+.box:focus-visible {
+  transform: translateY(-8px);
+  box-shadow: 0 22px 50px rgba(10,7,30,0.65);
 }
-.boxes > .box:nth-child(2){
-  text-align: center;
+
+/* keep touch/mobile subtle to avoid large shifts */
+@media (max-width: 720px) {
+  .box:hover,
+  .box:focus-within,
+  .box:focus-visible {
+    transform: none;
+    box-shadow: 0 14px 30px rgba(10,7,30,0.5);
+  }
 }
-.boxes > .box:nth-child(3){
-  text-align: center;
-}
-.boxes > .box:nth-child(1) button{ margin-left: 0; }
-.boxes > .box:nth-child(2) button{ margin: 0 auto; display: inline-block; }
-.boxes > .box:nth-child(3) button{ margin-left: auto; display: block; }
 @media (max-width: 900px){
   .boxes{
     gap: 0.75rem;
@@ -189,5 +204,5 @@ body{
     text-align: center;
   }
   .box:nth-child(3){ text-align: center; }
-  .box button{ margin: 0 auto; display: inline-block; }
+  .box .btn{ margin: 0.5rem auto 0; display: block; width: 70%; max-width: 260px; }
 }
