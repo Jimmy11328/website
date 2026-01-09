@@ -1,150 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Your Name — Portfolio</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card: #020617;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      background: linear-gradient(135deg, #020617, #0f172a);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    header {
-      padding: 4rem 2rem 2rem;
-      text-align: center;
-    }
-
-    header h1 {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
-    }
-
-    header p {
-      color: var(--muted);
-      font-size: 1.1rem;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 2rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .card {
-      background: rgba(2, 6, 23, 0.8);
-      border: 1px solid rgba(148, 163, 184, 0.15);
-      border-radius: 14px;
-      padding: 1.5rem;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-    }
-
-    .card h2 {
-      margin-top: 0;
-      font-size: 1.3rem;
-    }
-
-    .tag {
-      display: inline-block;
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--accent);
-      padding: 0.3rem 0.6rem;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      margin: 0.2rem 0.2rem 0 0;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucas Eling</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<header>
-  <h1>Your Name</h1>
-  <p>Developer • Designer • Builder of Cool Stuff</p>
-</header>
-
-<section class="container">
-
-  <div class="card">
-    <h2>👋 About Me</h2>
-    <p>
-      I’m a developer interested in building clean, fast, and user-friendly web experiences.
-      I enjoy working on full-stack projects and learning new technologies.
-    </p>
+  <div class="container">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
   </div>
-
-  <div class="card">
-    <h2>🛠 Skills</h2>
-    <div>
-      <span class="tag">HTML</span>
-      <span class="tag">CSS</span>
-      <span class="tag">JavaScript</span>
-      <span class="tag">Node.js</span>
-      <span class="tag">Python</span>
-    </div>
+  <div class="title">
+    <h1>Lucas Eling</h1>
+    <h2>My porfolio.</h2>
   </div>
-
-  <div class="card">
-    <h2>📂 Projects</h2>
-    <p><strong>Project One</strong> — short description here.</p>
-    <p><strong>Project Two</strong> — short description here.</p>
-    <p><strong>Project Three</strong> — short description here.</p>
-  </div>
-
-  <div class="card">
-    <h2>📫 Contact</h2>
-    <p>Email: <a href="mailto:you@yourdomain.com">you@yourdomain.com</a></p>
-    <p>GitHub: <a href="https://github.com/yourname" target="_blank">github.com/yourname</a></p>
-    <p>LinkedIn: <a href="https://linkedin.com/in/yourname" target="_blank">linkedin.com/in/yourname</a></p>
-  </div>
-
-</section>
-
-<footer>
-  © <span id="year"></span> Your Name — All rights reserved.
-</footer>
-
-<script>
-  document.getElementById("year").textContent = new Date().getFullYear();
-</script>
-
 </body>
 </html>
