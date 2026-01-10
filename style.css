@@ -502,14 +502,14 @@ body{
 /* Mint theme (light) */
 [data-theme="mint"] {
   --settings-text-color: #0b1222;
-  --bg-grad-start: #e8fff5;
-  --bg-grad-mid: #dbfff0;
-  --bg-grad-end: #c2ffe0;
-  --shape-dark: #eafff6;
-  --shape-light: #ffffff;
+  --bg-grad-start: #adf7d7;
+  --bg-grad-mid: #a9f5d5;
+  --bg-grad-end: #a9fad1;
+  --shape-dark: #ffffff;
+  --shape-light: #8bfccb;
   --title-color: #08322b;
   --box-bg-start: #ddfff3;
-  --box-bg-end: #bff2e1;
+  --box-bg-end: hsl(160, 88%, 78%);
   --text-color: #05332d;
   --btn-bg: rgba(0,0,0,0.06);
   --btn-border: rgba(0,0,0,0.08);
