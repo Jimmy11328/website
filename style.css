@@ -153,6 +153,30 @@ html,body{
   z-index: 1;
   pointer-events: none;
 }
+
+/* dynamic secondary-color glow spots (spawned via JS) */
+.glow-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glow-spot {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(8px);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.85);
+  animation: glow-fade 4.5s ease-in-out forwards;
+}
+
+@keyframes glow-fade {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+  20% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+  70% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.02); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.05); }
+}
 @keyframes float {
   0%   { transform: translate(-50%, 0); }
   50%  { transform: translate(-50%, -12px); }
@@ -725,15 +749,15 @@ body {
 /* Sunset theme (light-ish, use dark menu text) */
 [data-theme="sunset"] {
   --settings-text-color: #0b1222;
-  --bg-solid: #ffe6d0;
-  --bg-grad-start: #ffe6d0;
-  --bg-grad-mid: #ffc7a8;
-  --bg-grad-end: #ff9b6b;
-  --shape-dark: #ffd9bf;
-  --shape-light: #fff2e8;
+  --bg-solid: #ffe0c2;
+  --bg-grad-start: #ffe9d6;  /* pale highlight */
+  --bg-grad-mid: #ffb98c;    /* warm mid */
+  --bg-grad-end: #ff7a4a;    /* strong sunset base */
+  --shape-dark: #ffcba3;
+  --shape-light: #fff0e6;
   --title-color: #3b2f2f;
-  --box-bg-start: #ffc7a8;
-  --box-bg-end: #ff9b6b;
+  --box-bg-start: #ffb98c;
+  --box-bg-end: #ff7a4a;
   --text-color: #2b1f1f;
   --btn-bg: rgba(0,0,0,0.06);
   --btn-border: rgba(0,0,0,0.08);
@@ -782,15 +806,15 @@ body {
 /* Retro theme (warm neutrals, light menu text color dark) */
 [data-theme="retro"] {
   --settings-text-color: #0b1222;
-  --bg-solid: #f7ead0;
-  --bg-grad-start: #f7ead0;
-  --bg-grad-mid: #efcf96;
-  --bg-grad-end: #e2ac64;
-  --shape-dark: #f0d3a8;
+  --bg-solid: #f4e2ba;
+  --bg-grad-start: #fff4d4;  /* light cream */
+  --bg-grad-mid: #f0c47c;    /* golden mid */
+  --bg-grad-end: #d88f3f;    /* deeper orange */
+  --shape-dark: #f0cfa0;
   --shape-light: #fff6ec;
   --title-color: #4a3020;
-  --box-bg-start: #efcf96;
-  --box-bg-end: #e2ac64;
+  --box-bg-start: #f0c47c;
+  --box-bg-end: #d88f3f;
   --text-color: #3d2718;
   --btn-bg: rgba(0,0,0,0.06);
   --btn-border: rgba(0,0,0,0.08);
@@ -800,15 +824,15 @@ body {
 /* Solar theme (bright, use dark menu text) */
 [data-theme="solar"] {
   --settings-text-color: #0b1222;
-  --bg-solid: #fff7bf;
-  --bg-grad-start: #fff7bf;
-  --bg-grad-mid: #ffd88a;
-  --bg-grad-end: #ffb667;
-  --shape-dark: #fff0c8;
-  --shape-light: #fff9e8;
+  --bg-solid: #fff3aa;
+  --bg-grad-start: #fffad3;  /* bright highlight */
+  --bg-grad-mid: #ffd16f;    /* rich yellow/orange */
+  --bg-grad-end: #ff9a2f;    /* bold base */
+  --shape-dark: #ffe7a8;
+  --shape-light: #fff7df;
   --title-color: #3b2b00;
-  --box-bg-start: #ffd88a;
-  --box-bg-end: #ffb667;
+  --box-bg-start: #ffd16f;
+  --box-bg-end: #ff9a2f;
   --text-color: #3b2b00;
   --btn-bg: rgba(0,0,0,0.06);
   --btn-border: rgba(0,0,0,0.08);
@@ -854,19 +878,19 @@ body {
 /* Pink theme (light/pastel) */
 [data-theme="pink"] {
   --settings-text-color: #0b1222;
-  --bg-solid: #fff1f6;
-  --bg-grad-start: #fff1f6;
-  --bg-grad-mid: #ffd6eb;
-  --bg-grad-end: #ffcfe4;
-  --shape-dark: #ffd6e8;
-  --shape-light: #ffffff;
-  --title-color: #3b1222;
-  --box-bg-start: #ffd6eb;
-  --box-bg-end: #ffcfe4;
-  --text-color: #3b1222;
-  --btn-bg: rgba(0,0,0,0.06);
-  --btn-border: rgba(0,0,0,0.08);
-  --accent: #ff6fbf;
+  --bg-solid: #ffe9f3;
+  --bg-grad-start: #ffe9f3;
+  --bg-grad-mid: #ffc2e3;
+  --bg-grad-end: #ff9ed3;
+  --shape-dark: #ffb4dc;
+  --shape-light: #fff5fb;
+  --title-color: #2b0c1a;
+  --box-bg-start: #ffc7e8;
+  --box-bg-end: #ff9ed3;
+  --text-color: #2b0c1a;
+  --btn-bg: rgba(0,0,0,0.07);
+  --btn-border: rgba(0,0,0,0.1);
+  --accent: #ff49b5;
 }
 
 /* Galaxy theme (deep purple/blue, white text) */

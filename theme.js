@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const m = c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
     return m ? [parseInt(m[1]), parseInt(m[2]), parseInt(m[3])] : null;
   };
+  const toRgba = (rgb, alpha = 1) => `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
   const luminance = ([r,g,b]) => {
     const srgb = [r,g,b].map(v => {
       v /= 255;
@@ -160,6 +161,11 @@ document.addEventListener("DOMContentLoaded", () => {
       try { window.__backgroundDriftCleanup(); } catch {}
     }
     initRandomBackgroundDrift();
+    // Re-init glow spots to respect motion toggle
+    if (window.__glowCleanup) {
+      try { window.__glowCleanup(); } catch {}
+    }
+    initGlowSpots();
   };
 
   // restore display settings
@@ -201,6 +207,86 @@ document.addEventListener("DOMContentLoaded", () => {
     applyMotionOverride(!!e.target.checked);
   });
 
+  // Soft, transient glow spots that appear/disappear randomly
+  const initGlowSpots = () => {
+    if (window.__glowCleanup) {
+      try { window.__glowCleanup(); } catch {}
+    }
+
+    const container = document.querySelector('.container');
+    if (!container) return;
+
+    let layer = container.querySelector('.glow-layer');
+    if (!layer) {
+      layer = document.createElement('div');
+      layer.className = 'glow-layer';
+      container.insertBefore(layer, container.firstChild);
+    } else {
+      layer.innerHTML = '';
+    }
+
+    const maxSpots = 3;
+    let active = 0;
+    let timer = null;
+    const rng = (min, max) => min + Math.random() * (max - min);
+
+    const spawn = () => {
+      const allowMotion = localStorage.getItem('allowMotion');
+      if (allowMotion === 'false') {
+        layer.innerHTML = '';
+        active = 0;
+        timer = setTimeout(spawn, 1200);
+        return;
+      }
+
+      if (active >= maxSpots) {
+        timer = setTimeout(spawn, rng(700, 1200));
+        return;
+      }
+
+      const cs = getComputedStyle(document.documentElement);
+      const colorVal = (cs.getPropertyValue('--shape-light') || '#ffffff').trim();
+      const rgb = parseCSSColor(colorVal) || [255, 255, 255];
+      const rgba = toRgba(rgb, 0.38);
+
+      const size = rng(50, 80);
+      const left = rng(8, 92);
+      const top = rng(8, 92);
+
+      const spot = document.createElement('div');
+      spot.className = 'glow-spot';
+      spot.style.width = `${size}px`;
+      spot.style.height = `${size}px`;
+      spot.style.left = `${left}%`;
+      spot.style.top = `${top}%`;
+      spot.style.background = `radial-gradient(circle at 50% 50%, ${rgba} 0%, rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0) 65%)`;
+
+      const duration = rng(2600, 5200);
+      spot.style.animationDuration = `${duration}ms`;
+
+      layer.appendChild(spot);
+      active++;
+
+      const handleDone = () => {
+        spot.removeEventListener('animationend', handleDone);
+        spot.remove();
+        active--;
+      };
+      spot.addEventListener('animationend', handleDone);
+
+      timer = setTimeout(spawn, rng(620, 1400));
+    };
+
+    spawn();
+
+    window.__glowCleanup = () => {
+      if (timer) clearTimeout(timer);
+      timer = null;
+      active = 0;
+      layer && (layer.innerHTML = '');
+    };
+  };
+
   // Random drift for background shapes (replaces CSS keyframes)
   const initRandomBackgroundDrift = () => {
     // cleanup any existing drift
@@ -220,11 +306,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const scaleRange = isMobile ? 0.12 : 0.18;
     const rotRange = isMobile ? 5 : 8;
 
+    // Corner targets relative to center with small jitter
+    const corners = [
+      { x: -range, y: -range },
+      { x: range, y: -range },
+      { x: range, y: range },
+      { x: -range, y: range }
+    ];
+    const jitter = () => rng(-range * 0.15, range * 0.15);
+
     const states = shapes.map(() => ({
       x: 0, y: 0, s: 1, r: 0,
-      tx: rng(-range, range), ty: rng(-range, range), ts: 1 + rng(-scaleRange, scaleRange), tr: rng(-rotRange, rotRange),
-      speed: rng(0.08, 0.18) * (isMobile ? 0.9 : 1.0),
-      nextTarget: performance.now() + rng(3200, 6200)
+      tx: corners[0].x + jitter(),
+      ty: corners[0].y + jitter(),
+      ts: 1 + rng(-scaleRange, scaleRange),
+      tr: rng(-rotRange, rotRange),
+      speed: rng(0.12, 0.22) * (isMobile ? 0.9 : 1.0),
+      nextTarget: performance.now() + rng(4200, 7200)
     }));
 
     let rafId = null;
@@ -244,14 +342,15 @@ document.addEventListener("DOMContentLoaded", () => {
       shapes.forEach((el, i) => {
         const st = states[i];
         if (nowTs >= st.nextTarget) {
-          st.tx = rng(-range, range);
-          st.ty = rng(-range, range);
+          const target = corners[Math.floor(rng(0, corners.length))];
+          st.tx = target.x + jitter();
+          st.ty = target.y + jitter();
           st.ts = 1 + rng(-scaleRange, scaleRange);
           st.tr = rng(-rotRange, rotRange);
-          st.nextTarget = nowTs + rng(3200, 6200);
+          st.nextTarget = nowTs + rng(4200, 7200);
         }
 
-        const blend = 1 - Math.exp(-st.speed * 5 * dt); // smooth, frame-rate independent and slower glide
+        const blend = 1 - Math.exp(-st.speed * 4.2 * dt); // smooth, frame-rate independent, corner-to-corner glide
         st.x += (st.tx - st.x) * blend;
         st.y += (st.ty - st.y) * blend;
         st.s += (st.ts - st.s) * blend;
@@ -274,5 +373,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   };
 
+  initGlowSpots();
   initRandomBackgroundDrift();
 });
