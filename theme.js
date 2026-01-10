@@ -247,9 +247,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const cs = getComputedStyle(document.documentElement);
       const colorVal = (cs.getPropertyValue('--shape-light') || '#ffffff').trim();
       const rgb = parseCSSColor(colorVal) || [255, 255, 255];
-      const rgba = toRgba(rgb, 0.38);
+      const rgba = toRgba(rgb, 0.22);
 
-      const size = rng(50, 80);
+      const size = rng(20, 40);
       const left = rng(8, 92);
       const top = rng(8, 92);
 
@@ -259,7 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
       spot.style.height = `${size}px`;
       spot.style.left = `${left}%`;
       spot.style.top = `${top}%`;
-      spot.style.background = `radial-gradient(circle at 50% 50%, ${rgba} 0%, rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0) 65%)`;
+      spot.style.background = `radial-gradient(circle at 50% 50%, ${rgba} 0%, rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0) 45%)`;
 
       const duration = rng(2600, 5200);
       spot.style.animationDuration = `${duration}ms`;
@@ -274,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
       };
       spot.addEventListener('animationend', handleDone);
 
-      timer = setTimeout(spawn, rng(620, 1400));
+      timer = setTimeout(spawn, rng(900, 1800));
     };
 
     spawn();

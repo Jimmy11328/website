@@ -165,7 +165,7 @@ html,body{
 .glow-spot {
   position: absolute;
   border-radius: 50%;
-  filter: blur(8px);
+  filter: blur(4px);
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.85);
   animation: glow-fade 4.5s ease-in-out forwards;
@@ -173,8 +173,8 @@ html,body{
 
 @keyframes glow-fade {
   0% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
-  20% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
-  70% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.02); }
+  20% { opacity: 0.45; transform: translate(-50%, -50%) scale(1); }
+  70% { opacity: 0.35; transform: translate(-50%, -50%) scale(1.02); }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(1.05); }
 }
 @keyframes float {
