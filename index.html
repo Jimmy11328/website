@@ -8,12 +8,34 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+  <div class="settings" aria-hidden="false">
+    <button class="hamburger" aria-label="Open settings" aria-expanded="false" aria-controls="settings-panel">
+      Settings
+    </button>
+    <div id="settings-panel" class="settings-panel" role="dialog" aria-hidden="true">
+      <h4>Theme</h4>
+      <div class="swatches">
+        <button class="theme-swatch" data-theme="dark" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Dark</button>
+        <button class="theme-swatch" data-theme="light" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Light</button>
+        <button class="theme-swatch" data-theme="purple" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Purple</button>
+        <button class="theme-swatch" data-theme="ocean" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Ocean</button>
+        <button class="theme-swatch" data-theme="sunset" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Sunset</button>
+        <button class="theme-swatch" data-theme="forest" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Forest</button>
+        <button class="theme-swatch" data-theme="aurora" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Aurora</button>
+        <button class="theme-swatch" data-theme="mint" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Mint</button>
+        <button class="theme-swatch" data-theme="retro" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Retro</button>
+        <button class="theme-swatch" data-theme="solar" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Solar</button>
+        <button class="theme-swatch" data-theme="midnight" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Midnight</button>
+        <button class="theme-swatch" data-theme="lava" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Lava</button>
+      </div>
+    </div>
+  </div>
+   <div class="container">
+     <div></div>
+     <div></div>
+     <div></div>
+     <div></div>
+     <div></div>
 
     <div class="title">
       <h1>Lucas Eling</h1>
@@ -25,13 +47,6 @@
         <p>Check out my recent projects.</p>
         <a class="btn" href="projects.html">View Projects</a>
       </div>
-
-      <div class="box">
-        <h3>Library</h3>
-        <p>My library system and resources.</p>
-        <a class="btn" href="library.html">Open Library</a>
-      </div>
-
       <div class="box">
         <h3>About Me</h3>
         <p>A little bit about me and some links!</p>
@@ -39,5 +54,6 @@
       </div>
     </div>
   </div>
-</body>
+  <script src="theme.js" defer></script>
+ </body>
 </html>

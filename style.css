@@ -10,7 +10,7 @@ html,body{
   min-height: 100vh;
   overflow: hidden;
   position: relative;
-  background: linear-gradient(180deg,#ff057c 0%,#6802b6 40%,#11f577 100%);
+  background: linear-gradient(180deg, var(--bg-grad-start) 0%, var(--bg-grad-mid) 40%, var(--bg-grad-end) 100%);
 }
 .container > div:nth-child(-n+5){
   position: absolute;
@@ -26,14 +26,14 @@ html,body{
 .container > div:nth-child(1){
   width: 140%;
   height: 110%;
-  background: #ff057c;
+  background: transparent;
   left: -5%;
   top: -5%;
 }
 .container > div:nth-child(2){
   width: 70%;
   height: 80%;
-  background: #6802b6;
+  background: var(--shape-dark);
   top: -12%;
   right: -12%;
   animation-delay: 1s;
@@ -41,7 +41,7 @@ html,body{
 .container > div:nth-child(3){
   width: 50%;
   height: 50%;
-  background: #f19112;
+  background: var(--shape-dark);
   bottom: -10%;
   left: -5%;
   animation-delay: .75s;
@@ -49,7 +49,7 @@ html,body{
 .container > div:nth-child(4){
   width: 80%;
   height: 65%;
-  background: #f35213;
+  background: var(--shape-light);
   bottom: -15%;
   right: -20%;
   animation-delay: 1.5s;
@@ -57,7 +57,7 @@ html,body{
 .container > div:nth-child(5){
   width: 60%;
   height: 50%;
-  background: #11f577;
+  background: var(--shape-dark);
   animation-delay: 1.9s;
   bottom: 0;
   right: 50%;
@@ -92,14 +92,14 @@ body{
   font-family: 'Baloo 2', 'Fredoka One', cursive;
 }
 .title h1{
-  color: #fff;
+  color: var(--title-color);
   font-family: 'Baloo 2', cursive;
   font-weight: 800;
   font-size: 3.6rem;
   margin-bottom: 0.25rem;
 }
 .title h2{
-  color: #fff;
+  color: var(--title-color);
   font-family: 'Baloo 2', cursive;
   font-weight: 700;
   font-size: 1.35rem;
@@ -124,12 +124,12 @@ body{
   justify-content: flex-start;
   flex: 1 1 0;
   min-width: 220px;
-  background: linear-gradient(135deg, #6802b6 0%, #2b0f66 100%);
+  background: linear-gradient(135deg, var(--box-bg-start) 0%, var(--box-bg-end) 100%);
   border-radius: 1rem;
   padding: 1.25rem 1.5rem;
   gap: 0.75rem;
   text-align: left;
-  color: #fff;
+  color: var(--text-color);
   font-weight: 700;
   box-shadow: 0 10px 30px rgba(10,7,30,0.5);
   transition: transform .18s ease, box-shadow .18s ease;
@@ -148,9 +148,9 @@ body{
 }
 
 .box .btn{
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: #fff;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  color: var(--text-color);
   padding: 0.6rem 0;
   width: 160px;
   max-width: 80%;
@@ -220,10 +220,10 @@ body{
     justify-content: center;
     min-width: 120px;
     padding: 0.6rem 0.9rem;
-    background: linear-gradient(135deg, #6802b6 0%, #2b0f66 100%);
+    background: linear-gradient(135deg, var(--box-bg-start) 0%, var(--box-bg-end) 100%);
     color: #fff;
     border-radius: 0.6rem;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(0, 0, 0, 0.12);
     box-shadow: 0 10px 30px rgba(10,7,30,0.5);
     text-decoration: none;
     font-weight: 700;
@@ -244,4 +244,373 @@ body{
         min-width: 100px;
         padding: 0.5rem 0.75rem;
     }
+  }
+
+/* settings UI */
+.settings {
+  position: fixed;
+  top: 1rem;
+  right: 2rem;
+  z-index: 60;
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+.hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.6rem;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--settings-text-color);
+  font-weight: 700;
+  border-radius: 0.45rem;
+  transition: background .14s ease, color .14s ease, transform .14s ease;
+}
+.hamburger.open {
+  background: var(--btn-bg);
+  color: var(--text-color);
+  transform: translateY(-1px);
+}
+/* keep spans rules harmless if present */
+.hamburger span { display: none; }
+.hamburger.open span:nth-child(1){ transform: translateY(6px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity: 0; }
+.hamburger.open span:nth-child(3){ transform: translateY(-6px) rotate(-45deg); }
+
+.settings-panel {
+  min-width: 220px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border-radius: 0.6rem;
+  padding: 0.6rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  display: none;
+  gap: .5rem;
+  flex-direction: column;
+  align-items: stretch;
+  color: var(--settings-text-color);
+}
+.settings-panel.open { display: flex; }
+
+.settings-panel h4 {
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+  color: var(--settings-text-color);
+}
+.theme-swatch {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.6rem;
+  justify-content: flex-start;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.04);
+  font-weight: 700;
+}
+
+/* layout: swatches in rows of 3 with small preview circles */
+.settings-panel .swatches {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+/* preview dot */
+.theme-swatch .swatch-preview {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  flex: 0 0 1rem;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* highlight selected */
+.theme-swatch[aria-pressed="true"] {
+  outline: 2px solid var(--accent, #7aa2ff);
+  background: rgba(0,0,0,0.02);
+}
+
+/* responsive: 2 columns on smaller screens, 1 on very small */
+@media (max-width: 600px) {
+  .settings-panel .swatches {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 360px) {
+  .settings-panel .swatches {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* per-theme preview gradients (static so preview reflects the theme regardless of current active theme) */
+.theme-swatch[data-theme="dark"] .swatch-preview { background: linear-gradient(135deg, #0b0b10, #151522); }
+.theme-swatch[data-theme="light"] .swatch-preview { background: linear-gradient(135deg, #f4f7fb, #e9eef6); }
+.theme-swatch[data-theme="purple"] .swatch-preview { background: linear-gradient(135deg, #3b0f5a, #7b4bff); }
+.theme-swatch[data-theme="ocean"] .swatch-preview { background: linear-gradient(135deg, #003e66, #006b9a); }
+.theme-swatch[data-theme="sunset"] .swatch-preview { background: linear-gradient(135deg, #ffecd2, #ff7b54); }
+.theme-swatch[data-theme="forest"] .swatch-preview { background: linear-gradient(135deg, #0b3b2b, #1d6b4f); }
+.theme-swatch[data-theme="aurora"] .swatch-preview { background: linear-gradient(135deg, #0a2b2f, #2d0b3b); }
+.theme-swatch[data-theme="mint"] .swatch-preview { background: linear-gradient(135deg, #e8fff5, #c2ffe0); }
+.theme-swatch[data-theme="retro"] .swatch-preview { background: linear-gradient(135deg, #f6e7c1, #e8b26a); }
+.theme-swatch[data-theme="solar"] .swatch-preview { background: linear-gradient(135deg, #fff6b3, #ffb056); }
+.theme-swatch[data-theme="midnight"] .swatch-preview { background: linear-gradient(135deg, #02021b, #17173d); }
+.theme-swatch[data-theme="lava"] .swatch-preview { background: linear-gradient(135deg, #6b0000, #ff8066); }
+.theme-swatch[data-theme="steel"] .swatch-preview { background: linear-gradient(135deg, #d8e1ea, #c4d0da); }
+
+:root {
+  --settings-text-color: #0b1222; /* default (light theme) */
+  --bg-grad-start: #0b0b0b;
+  --bg-grad-mid: #0b0b0b;
+  --bg-grad-end: #0b0b0b;
+  --shape-dark: #000000;
+  --shape-light: #ffffff;
+  --title-color: #ffffff;
+  --box-bg-start: #070707;
+  --box-bg-end: #dddddd;
+  --text-color: #ffffff;
+  --btn-bg: rgba(255,255,255,0.08);
+  --btn-border: rgba(255,255,255,0.12);
+  --accent: #7aa2ff;
+}
+
+/* Dark theme (explicit) */
+[data-theme="dark"] {
+  --settings-text-color: #ffffff;
+  --bg-grad-start: #000000;
+  --bg-grad-mid: #0a0a0a;
+  --bg-grad-end: #000000;
+  --shape-dark: #0a0a0a;
+  --shape-light: #1a1a1a;
+  --title-color: #ffffff;
+  --box-bg-start: #070707;
+  --box-bg-end: #1d1d1d;
+  --text-color: #ffffff;
+  --btn-bg: rgba(255,255,255,0.06);
+  --btn-border: rgba(255,255,255,0.08);
+  --accent: #7aa2ff;
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --settings-text-color: #0b1222;
+  --bg-grad-start: #f7f7f9;
+  --bg-grad-mid: #ffffff;
+  --bg-grad-end: #e9eef8;
+  --shape-dark: #ffffff;
+  --shape-light: #ffffff;
+  --title-color: #0b1222;
+  --box-bg-start: #e4e4e4;
+  --box-bg-end: #d4d4d4;
+  --text-color: #0b1222;
+  --btn-bg: rgba(0,0,0,0.06);
+  --btn-border: rgba(0,0,0,0.08);
+  --accent: #4a79ff;
+}
+
+/* Purple accent theme */
+[data-theme="purple"] {
+  --settings-text-color: #ffffff;
+  --bg-grad-start: #0b0b17;
+  --bg-grad-mid: #2b0d3b;
+  --bg-grad-end: #0b0b17;
+  --shape-dark: #150822;
+  --shape-light: #efd9ff;
+  --title-color: #fff3ff;
+  --box-bg-start: #2b0d3b;
+  --box-bg-end: #efd9ff;
+  --text-color: #fff3ff;
+  --btn-bg: rgba(255,255,255,0.06);
+  --btn-border: rgba(255,255,255,0.08);
+  --accent: #c77aff;
+}
+
+/* Ocean theme */
+[data-theme="ocean"] {
+  --settings-text-color: #ffffff;
+  --bg-grad-start: #001f3f;
+  --bg-grad-mid: #003d66;
+  --bg-grad-end: #001f3f;
+  --shape-dark: #02243a;
+  --shape-light: #7fd3ff;
+  --title-color: #aeefff;
+  --box-bg-start: #003e66;
+  --box-bg-end: #006b9a;
+  --text-color: #e8f9ff;
+  --btn-bg: rgba(255,255,255,0.06);
+  --btn-border: rgba(255,255,255,0.08);
+  --accent: #2ec4ff;
+}
+
+/* Sunset theme (light-ish, use dark menu text) */
+[data-theme="sunset"] {
+  --settings-text-color: #0b1222;
+  --bg-grad-start: #ffecd2;
+  --bg-grad-mid: #fcb69f;
+  --bg-grad-end: #ff7b54;
+  --shape-dark: #ffd6b6;
+  --shape-light: #fff3e6;
+  --title-color: #3b2f2f;
+  --box-bg-start: #ffd6b6;
+  --box-bg-end: #ffb58a;
+  --text-color: #2b1f1f;
+  --btn-bg: rgba(0,0,0,0.06);
+  --btn-border: rgba(0,0,0,0.08);
+  --accent: #ff7b54;
+}
+
+/* Forest theme */
+[data-theme="forest"] {
+  --settings-text-color: #ffffff;
+  --bg-grad-start: #072117;
+  --bg-grad-mid: #0b3b2b;
+  --bg-grad-end: #072117;
+  --shape-dark: #05261d;
+  --shape-light: #9ff2c8;
+  --title-color: #dfffe9;
+  --box-bg-start: #0b3b2b;
+  --box-bg-end: #1d6b4f;
+  --text-color: #eafff4;
+  --btn-bg: rgba(255,255,255,0.06);
+  --btn-border: rgba(255,255,255,0.08);
+  --accent: #6be6b5;
+}
+
+/* Aurora theme */
+[data-theme="aurora"] {
+  --settings-text-color: #ffffff;
+  --bg-grad-start: #0b0b17;
+  --bg-grad-mid: #0a2b2f;
+  --bg-grad-end: #2d0b3b;
+  --shape-dark: #0a1a28;
+  --shape-light: #a8fff0;
+  --title-color: #dff7ff;
+  --box-bg-start: #122b34;
+  --box-bg-end: #2b0d3b;
+  --text-color: #e9fffb;
+  --btn-bg: rgba(255,255,255,0.06);
+  --btn-border: rgba(255,255,255,0.08);
+  --accent: #5ff7c6;
+}
+
+/* Mint theme (light) */
+[data-theme="mint"] {
+  --settings-text-color: #0b1222;
+  --bg-grad-start: #e8fff5;
+  --bg-grad-mid: #dbfff0;
+  --bg-grad-end: #c2ffe0;
+  --shape-dark: #eafff6;
+  --shape-light: #ffffff;
+  --title-color: #08322b;
+  --box-bg-start: #ddfff3;
+  --box-bg-end: #bff2e1;
+  --text-color: #05332d;
+  --btn-bg: rgba(0,0,0,0.06);
+  --btn-border: rgba(0,0,0,0.08);
+  --accent: #36e6a9;
+}
+
+/* Retro theme (warm neutrals, light menu text color dark) */
+[data-theme="retro"] {
+  --settings-text-color: #0b1222;
+  --bg-grad-start: #f6e7c1;
+  --bg-grad-mid: #f0c987;
+  --bg-grad-end: #e8b26a;
+  --shape-dark: #f1d7a6;
+  --shape-light: #fff6ec;
+  --title-color: #4a3020;
+  --box-bg-start: #f0c987;
+  --box-bg-end: #e8b26a;
+  --text-color: #3d2718;
+  --btn-bg: rgba(0,0,0,0.06);
+  --btn-border: rgba(0,0,0,0.08);
+  --accent: #ff9f1c;
+}
+
+/* Solar theme (bright, use dark menu text) */
+[data-theme="solar"] {
+  --settings-text-color: #0b1222;
+  --bg-grad-start: #fff6b3;
+  --bg-grad-mid: #ffd27a;
+  --bg-grad-end: #ffb056;
+  --shape-dark: #fff0c3;
+  --shape-light: #fff9e6;
+  --title-color: #3b2b00;
+  --box-bg-start: #ffd27a;
+  --box-bg-end: #ffb056;
+  --text-color: #3b2b00;
+  --btn-bg: rgba(0,0,0,0.06);
+  --btn-border: rgba(0,0,0,0.08);
+  --accent: #ffb400;
+}
+
+/* Midnight theme (very dark) */
+[data-theme="midnight"] {
+  --settings-text-color: #ffffff;
+  --bg-grad-start: #02021b;
+  --bg-grad-mid: #0b0b2a;
+  --bg-grad-end: #02021b;
+  --shape-dark: #040427;
+  --shape-light: #1a1a3a;
+  --title-color: #dfe7ff;
+  --box-bg-start: #0b0b2a;
+  --box-bg-end: #17173d;
+  --text-color: #e9f0ff;
+  --btn-bg: rgba(255,255,255,0.06);
+  --btn-border: rgba(255,255,255,0.08);
+  --accent: #7aa2ff;
+}
+
+/* Lava theme (fiery) */
+[data-theme="lava"] {
+  --settings-text-color: #ffffff;
+  --bg-grad-start: #2b0000;
+  --bg-grad-mid: #6b0000;
+  --bg-grad-end: #2b0000;
+  --shape-dark: #3a0000;
+  --shape-light: #ffbbaa;
+  --title-color: #fff0f0;
+  --box-bg-start: #6b0000;
+  --box-bg-end: #ff8066;
+  --text-color: #fff3f1;
+  --btn-bg: rgba(255,255,255,0.06);
+  --btn-border: rgba(255,255,255,0.08);
+  --accent: #ff615a;
+}
+
+/* Steel theme (cool neutrals, light menu text dark) */
+[data-theme="steel"] {
+  --settings-text-color: #0b1222;
+  --bg-grad-start: #f2f6f9;
+  --bg-grad-mid: #d8e1ea;
+  --bg-grad-end: #c4d0da;
+  --shape-dark: #e6eef6;
+  --shape-light: #ffffff;
+  --title-color: #072033;
+  --box-bg-start: #d8e1ea;
+  --box-bg-end: #c4d0da;
+  --text-color: #072033;
+  --btn-bg: rgba(0,0,0,0.06);
+  --btn-border: rgba(0,0,0,0.08);
+  --accent: #4a79ff;
+}
+
+/* small visual transition to make changes obvious */
+:root, html, body {
+  transition: background 240ms ease, color 240ms ease;
+}
+
+.settings,
+.hamburger,
+.settings-panel,
+.theme-swatch {
+  font-family: 'Baloo 2', 'Fredoka One', cursive;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
