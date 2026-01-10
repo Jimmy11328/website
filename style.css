@@ -12,6 +12,31 @@ html,body{
   position: relative;
   background: linear-gradient(180deg, var(--bg-grad-start) 0%, var(--bg-grad-mid) 40%, var(--bg-grad-end) 100%);
 }
+
+/* particle canvas behind content but above background shapes */
+#particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* behind UI elements */
+  pointer-events: none;
+  display: block;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+/* ensure particles do not blend over light-ish UIs */
+[data-theme="light"] #particles,
+[data-theme="pink"] #particles,
+[data-theme="mint"] #particles {
+  mix-blend-mode: normal !important;
+}
+
+/* disable heavy animation when user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  #particles { display: none; }
+}
+
 .container > div:nth-child(-n+5){
   position: absolute;
   border-radius: 3rem;
@@ -251,10 +276,12 @@ body{
   position: fixed;
   top: 1rem;
   right: 2rem;
-  z-index: 60;
+  z-index: 1000; /* above particles */
   display: flex;
   gap: 0.5rem;
   align-items: flex-start;
+  isolation: isolate; /* create new stacking context to prevent canvas blending over panel */
+  mix-blend-mode: normal; /* ensure UI isn't affected by background blending */
 }
 .hamburger {
   display: inline-flex;
@@ -291,6 +318,9 @@ body{
   flex-direction: column;
   align-items: stretch;
   color: var(--settings-text-color);
+  position: relative;
+  z-index: 1001; /* sit above particles and container contents */
+  mix-blend-mode: normal; /* prevent particles from visually blending with panel */
 }
 .settings-panel.open { display: flex; }
 
@@ -387,7 +417,7 @@ body{
 /* Dark theme (explicit) */
 [data-theme="dark"] {
   --settings-text-color: #ffffff;
-  --bg-grad-start: #000000;
+  --bg-grad-start: #0f0f0f;
   --bg-grad-mid: #0a0a0a;
   --bg-grad-end: #000000;
   --shape-dark: #0a0a0a;
@@ -489,7 +519,7 @@ body{
 /* Aurora theme */
 [data-theme="aurora"] {
   --settings-text-color: #ffffff;
-  --bg-grad-start: #0b0b17;
+  --bg-grad-start: #260269;
   --bg-grad-mid: #0a2b2f;
   --bg-grad-end: #2d0b3b;
   --shape-dark: #0a1a28;
@@ -517,7 +547,7 @@ body{
   --text-color: #05332d;
   --btn-bg: rgba(0,0,0,0.06);
   --btn-border: rgba(0,0,0,0.08);
-  --accent: #36e6a9;
+  --accent: #189e6f;
 }
 
 /* Retro theme (warm neutrals, light menu text color dark) */
