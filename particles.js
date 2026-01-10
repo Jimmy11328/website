@@ -9,7 +9,10 @@ const canvas = existingCanvas || (() => {
 const ctx = canvas.getContext('2d');
 
 const particles = [];
-const PARTICLE_COUNT = 160;
+let PARTICLE_COUNT = (() => {
+  const stored = Number(localStorage.getItem('particlesCount'));
+  return stored && stored > 0 ? stored : 160;
+})();
 const BASE_SPEED = 0.35;
 const MAX_SPEED = 1.25;
 const MOUSE_INFLUENCE = 140;
@@ -24,6 +27,10 @@ let palette = {
 
 let currentTheme = '';
 let radiusBoost = 0;
+let particlesEnabled = (() => {
+  const v = localStorage.getItem('particlesEnabled');
+  return v === null ? true : v === 'true';
+})();
 
 let mouseX = null;
 let mouseY = null;
@@ -59,6 +66,11 @@ function darken(rgb, amount) {
   return rgb.map(v => Math.max(0, Math.round(v * factor)));
 }
 
+function lighten(rgb, amount) {
+  const a = Math.max(0, Math.min(1, amount));
+  return rgb.map(v => Math.min(255, Math.round(v + (255 - v) * a)));
+}
+
 function luminance([r, g, b]) {
   const srgb = [r, g, b].map(v => {
     const n = v / 255;
@@ -71,77 +83,25 @@ function refreshPalette() {
   const cs = getComputedStyle(document.documentElement);
   const theme = (document.documentElement.getAttribute('data-theme') || '').toLowerCase();
   currentTheme = theme;
-  const themeCores = {
-    light: [0, 0, 0],
-    pink: [232, 70, 140],
-    sunset: [224, 96, 32],
-    mint: [24, 118, 88],
-    retro: [228, 190, 60],
-    solar: [236, 170, 24],
-  };
-  const fixed = themeCores[theme] || [38, 64, 128];
-  const light = parseColor(cs.getPropertyValue('--shape-light') || cs.getPropertyValue('--box-bg-end'), fixed);
+  const accent = parseColor(cs.getPropertyValue('--accent'), [122, 162, 255]);
+  const light = parseColor(cs.getPropertyValue('--shape-light') || cs.getPropertyValue('--box-bg-end'), accent);
   const text = parseColor(cs.getPropertyValue('--text-color'), [255, 255, 255]);
   const bg = parseColor(cs.getPropertyValue('--bg-grad-mid') || cs.getPropertyValue('--bg-grad-start'), light);
   const isLightBg = luminance(bg) > 0.35;
   const outerAlpha = isLightBg ? 0.24 : 0.1;
   const trailAlpha = isLightBg ? 0.34 : 0.2;
 
-  if (theme === 'pink') {
-    palette = {
-      core: 'rgb(245, 154, 196)',
-      mid: 'rgba(245, 154, 196, 0.75)',
-      outer: toRgba(light, Math.max(outerAlpha, 0.32)),
-      trail: toRgba(text, Math.max(trailAlpha, 0.45)),
-    };
-    radiusBoost = 0.8;
-    canvas.style.mixBlendMode = 'normal';
-  } else if (theme === 'sunset') {
-    palette = {
-      core: 'rgb(252, 171, 114)',
-      mid: 'rgba(252, 171, 114, 0.7)',
-      outer: toRgba(light, Math.max(outerAlpha, 0.28)),
-      trail: toRgba(text, Math.max(trailAlpha, 0.4)),
-    };
-    radiusBoost = 0.5;
-    canvas.style.mixBlendMode = 'normal';
-  } else if (theme === 'mint') {
-    palette = {
-      core: 'rgba(176, 255, 220, 1)',
-      mid: 'rgba(176, 255, 220, 0.9)',
-      outer: toRgba(light, Math.max(outerAlpha, 0.36)),
-      trail: 'rgba(0, 0, 0, 0.75)',
-    };
-    radiusBoost = 1.2;
-    canvas.style.mixBlendMode = 'normal';
-  } else if (theme === 'solar') {
-    palette = {
-      core: 'rgb(250, 198, 85)',
-      mid: 'rgba(250, 198, 85, 0.9)',
-      outer: toRgba(light, Math.max(outerAlpha, 0.36)),
-      trail: 'rgba(0, 0, 0, 0.75)',
-    };
-    radiusBoost = 1.2;
-    canvas.style.mixBlendMode = 'normal';
-  } else if (theme === 'light') {
-    palette = {
-      core: 'rgba(0, 0, 0, 1)',
-      mid: 'rgba(0, 0, 0, 0.7)',
-      outer: 'rgba(0, 0, 0, 0.10)',
-      trail: toRgba(text, trailAlpha),
-    };
-    radiusBoost = 0.6;
-    canvas.style.mixBlendMode = 'normal';
-  } else {
-    palette = {
-      core: toRgba(fixed, 1),
-      mid: toRgba(fixed, 0.6),
-      outer: toRgba(light, outerAlpha),
-      trail: toRgba(text, trailAlpha),
-    };
-    radiusBoost = 0;
-    canvas.style.mixBlendMode = '';
-  }
+  // Accent-driven palette across all themes
+  const coreRGB = isLightBg ? darken(accent, 0.32) : lighten(accent, 0.08);
+  const midRGB  = isLightBg ? darken(accent, 0.16) : lighten(accent, 0.22);
+  palette = {
+    core: toRgba(coreRGB, 1),
+    mid: toRgba(midRGB, isLightBg ? 0.72 : 0.6),
+    outer: toRgba(light, outerAlpha),
+    trail: toRgba(text, trailAlpha),
+  };
+  radiusBoost = isLightBg ? 0.6 : 0.0;
+  canvas.style.mixBlendMode = isLightBg ? 'normal' : '';
 }
 
 function setCanvasSize() {
@@ -223,10 +183,12 @@ function initParticles() {
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width / DPR, canvas.height / DPR);
-  particles.forEach(p => {
-    p.update();
-    p.draw();
-  });
+  if (particlesEnabled) {
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+  }
   requestAnimationFrame(animate);
 }
 
@@ -250,3 +212,14 @@ setCanvasSize();
 refreshPalette();
 initParticles();
 animate();
+
+// expose minimal controls
+window.particlesSetCount = function(count) {
+  const c = Math.max(40, Math.min(400, Number(count) || PARTICLE_COUNT));
+  PARTICLE_COUNT = c;
+  initParticles();
+};
+window.particlesSetEnabled = function(enabled) {
+  particlesEnabled = !!enabled;
+  canvas.style.display = particlesEnabled ? 'block' : 'none';
+};

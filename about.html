@@ -14,27 +14,50 @@
     </button>
     <div id="settings-panel" class="settings-panel" role="dialog" aria-hidden="true">
       <h4>Theme</h4>
-        <div class="swatches">
+      <div class="swatches">
         <button class="theme-swatch" data-theme="dark" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Dark</button>
         <button class="theme-swatch" data-theme="light" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Light</button>
-        <button class="theme-swatch" data-theme="purple" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Purple</button>
         <button class="theme-swatch" data-theme="pink" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Pink</button>
         <button class="theme-swatch" data-theme="galaxy" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Galaxy</button>
-        <button class="theme-swatch" data-theme="astraeus" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Astraeus</button>
         <button class="theme-swatch" data-theme="ocean" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Ocean</button>
         <button class="theme-swatch" data-theme="sunset" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Sunset</button>
         <button class="theme-swatch" data-theme="forest" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Forest</button>
         <button class="theme-swatch" data-theme="aurora" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Aurora</button>
-        <button class="theme-swatch" data-theme="mint" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Mint</button>
         <button class="theme-swatch" data-theme="retro" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Retro</button>
         <button class="theme-swatch" data-theme="solar" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Solar</button>
         <button class="theme-swatch" data-theme="midnight" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Midnight</button>
         <button class="theme-swatch" data-theme="lava" aria-pressed="false"><span class="swatch-preview" aria-hidden="true"></span>Lava</button>
       </div>
+
+      <h4>Display</h4>
+      <div class="controls" style="display:flex; flex-direction: column; gap: 0.5rem;">
+        <label for="text-size" style="display:flex; justify-content:space-between; align-items:center; gap:0.6rem;">
+          <span>Text Size</span>
+          <span id="text-size-value" aria-live="polite">100%</span>
+        </label>
+        <input id="text-size" type="range" min="85" max="130" step="5" value="100" aria-label="Text size">
+
+        <label for="particles-toggle" style="display:flex; justify-content:space-between; align-items:center; gap:0.6rem;">
+          <span>Show Particles</span>
+          <input id="particles-toggle" type="checkbox" checked aria-label="Show particles">
+        </label>
+
+        <label for="particles-density" style="display:flex; justify-content:space-between; align-items:center; gap:0.6rem;">
+          <span>Particles Density</span>
+          <span id="particles-density-value" aria-live="polite">160</span>
+        </label>
+        <input id="particles-density" type="range" min="60" max="240" step="20" value="160" aria-label="Particles density">
+
+        <label for="motion-toggle" style="display:flex; justify-content:space-between; align-items:center; gap:0.6rem;">
+          <span>Background Motion</span>
+          <input id="motion-toggle" type="checkbox" checked aria-label="Enable background motion">
+        </label>
+      </div>
     </div>
   </div>
   <div class="container">
     <canvas id="particles" aria-hidden="true"></canvas>
+    <div></div>
     <div></div>
     <div></div>
     <div></div>

@@ -104,4 +104,175 @@ document.addEventListener("DOMContentLoaded", () => {
       hamburger && hamburger.setAttribute("aria-label", 'Open settings');
     }
   });
+
+  // Open external links in new tabs for all pages
+  try {
+    document.querySelectorAll('a[href]').forEach(a => {
+      // Resolve relative URLs and compare origins
+      const url = new URL(a.getAttribute('href'), window.location.href);
+      if (url.origin !== window.location.origin) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    });
+  } catch (err) {
+    console.debug('external-link-targeting error', err);
+  }
+
+  // Display settings: text size, particles toggle, density
+  const textSize = document.getElementById('text-size');
+  const textSizeValue = document.getElementById('text-size-value');
+  const particlesToggle = document.getElementById('particles-toggle');
+  const particlesDensity = document.getElementById('particles-density');
+  const particlesDensityValue = document.getElementById('particles-density-value');
+  const motionToggle = document.getElementById('motion-toggle');
+
+  const applyFontScale = (percent) => {
+    const scale = Math.max(0.6, Math.min(2, percent / 100));
+    document.documentElement.style.setProperty('--font-scale', String(scale));
+    textSizeValue && (textSizeValue.textContent = `${Math.round(percent)}%`);
+    localStorage.setItem('fontScale', String(percent));
+  };
+
+  const applyParticlesEnabled = (enabled) => {
+    localStorage.setItem('particlesEnabled', enabled ? 'true' : 'false');
+    const canvas = document.getElementById('particles');
+    if (canvas) canvas.style.display = enabled ? 'block' : 'none';
+    if (window.particlesSetEnabled) {
+      try { window.particlesSetEnabled(enabled); } catch {}
+    }
+  };
+
+  const applyParticlesCount = (count) => {
+    const c = Math.max(40, Math.min(400, Number(count) || 160));
+    particlesDensityValue && (particlesDensityValue.textContent = String(c));
+    localStorage.setItem('particlesCount', String(c));
+    if (window.particlesSetCount) {
+      try { window.particlesSetCount(c); } catch {}
+    }
+  };
+
+  const applyMotionOverride = (enabled) => {
+    localStorage.setItem('allowMotion', enabled ? 'true' : 'false');
+    console.log('Motion override set to:', enabled);
+    // Re-init drift to apply override immediately
+    if (window.__backgroundDriftCleanup) {
+      try { window.__backgroundDriftCleanup(); } catch {}
+    }
+    initRandomBackgroundDrift();
+  };
+
+  // restore display settings
+  const storedFont = Number(localStorage.getItem('fontScale')) || 100;
+  textSize && (textSize.value = String(storedFont));
+  applyFontScale(storedFont);
+
+  const storedParticlesEnabled = localStorage.getItem('particlesEnabled');
+  const enabled = storedParticlesEnabled === null ? true : storedParticlesEnabled === 'true';
+  particlesToggle && (particlesToggle.checked = enabled);
+  applyParticlesEnabled(enabled);
+
+  const storedCount = Number(localStorage.getItem('particlesCount')) || 160;
+  particlesDensity && (particlesDensity.value = String(storedCount));
+  particlesDensityValue && (particlesDensityValue.textContent = String(storedCount));
+  applyParticlesCount(storedCount);
+
+  // motion: default to ON, let user turn off if desired
+  const storedMotion = localStorage.getItem('allowMotion');
+  const motionEnabled = storedMotion === 'false' ? false : true; // on by default
+  motionToggle && (motionToggle.checked = motionEnabled);
+  // Set localStorage if not already set
+  if (storedMotion === null) {
+    localStorage.setItem('allowMotion', 'true');
+  }
+
+
+  // listeners
+  textSize && textSize.addEventListener('input', (e) => {
+    applyFontScale(Number(e.target.value));
+  });
+  particlesToggle && particlesToggle.addEventListener('change', (e) => {
+    applyParticlesEnabled(!!e.target.checked);
+  });
+  particlesDensity && particlesDensity.addEventListener('input', (e) => {
+    applyParticlesCount(Number(e.target.value));
+  });
+  motionToggle && motionToggle.addEventListener('change', (e) => {
+    applyMotionOverride(!!e.target.checked);
+  });
+
+  // Random drift for background shapes (replaces CSS keyframes)
+  const initRandomBackgroundDrift = () => {
+    // cleanup any existing drift
+    if (window.__backgroundDriftCleanup) {
+      try { window.__backgroundDriftCleanup(); } catch {}
+    }
+
+    const isMobile = window.matchMedia('(max-width: 720px)').matches;
+    const container = document.querySelector('.container');
+    if (!container) return;
+    // select the first five divs directly under container (ignores canvas, title, boxes)
+    const shapes = Array.from(container.querySelectorAll(':scope > div')).slice(0, 5);
+    if (!shapes.length) return;
+
+    const rng = (min, max) => min + Math.random() * (max - min);
+    const range = isMobile ? 200 : 320;
+    const scaleRange = isMobile ? 0.12 : 0.18;
+    const rotRange = isMobile ? 5 : 8;
+
+    const states = shapes.map(() => ({
+      x: 0, y: 0, s: 1, r: 0,
+      tx: rng(-range, range), ty: rng(-range, range), ts: 1 + rng(-scaleRange, scaleRange), tr: rng(-rotRange, rotRange),
+      speed: rng(0.08, 0.18) * (isMobile ? 0.9 : 1.0),
+      nextTarget: performance.now() + rng(3200, 6200)
+    }));
+
+    let rafId = null;
+    let last = performance.now();
+
+    const tick = (nowTs) => {
+      const allowMotion = localStorage.getItem('allowMotion');
+      if (allowMotion === 'false') {
+        shapes.forEach(el => { el.style.transform = ''; });
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
+
+      const dt = Math.max(0.001, Math.min(0.05, (nowTs - last) / 1000));
+      last = nowTs;
+
+      shapes.forEach((el, i) => {
+        const st = states[i];
+        if (nowTs >= st.nextTarget) {
+          st.tx = rng(-range, range);
+          st.ty = rng(-range, range);
+          st.ts = 1 + rng(-scaleRange, scaleRange);
+          st.tr = rng(-rotRange, rotRange);
+          st.nextTarget = nowTs + rng(3200, 6200);
+        }
+
+        const blend = 1 - Math.exp(-st.speed * 5 * dt); // smooth, frame-rate independent and slower glide
+        st.x += (st.tx - st.x) * blend;
+        st.y += (st.ty - st.y) * blend;
+        st.s += (st.ts - st.s) * blend;
+        st.r += (st.tr - st.r) * blend;
+
+        el.style.transform = `translate3d(${st.x}px, ${st.y}px, 0) scale(${st.s}) rotate(${st.r}deg)`;
+      });
+
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    console.log('Background drift initialized, shapes:', shapes.length);
+
+    // expose cleanup so we can re-init when override changes
+    window.__backgroundDriftCleanup = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      shapes.forEach(el => { el.style.transform = ''; });
+      rafId = null;
+    };
+  };
+
+  initRandomBackgroundDrift();
 });
