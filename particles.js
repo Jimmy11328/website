@@ -18,6 +18,12 @@ const MAX_SPEED = 1.25;
 const MOUSE_INFLUENCE = 140;
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
+// Animation speed multiplier
+let animationSpeedMultiplier = (() => {
+  const stored = Number(localStorage.getItem('animationSpeed')) || 100;
+  return stored / 100;
+})();
+
 let palette = {
   core: 'rgba(38, 64, 128, 1)',
   mid: 'rgba(38, 64, 128, 0.6)',
@@ -130,8 +136,9 @@ class Particle {
   }
 
   update() {
-    this.x += this.vx;
-    this.y += this.vy;
+    const speedMult = animationSpeedMultiplier;
+    this.x += this.vx * speedMult;
+    this.y += this.vy * speedMult;
 
     if (this.x < this.radius || this.x > viewWidth - this.radius) {
       this.vx *= -1;
@@ -148,8 +155,8 @@ class Particle {
       const dist = Math.hypot(dx, dy) || 1;
       if (dist < MOUSE_INFLUENCE) {
         const force = (MOUSE_INFLUENCE - dist) / MOUSE_INFLUENCE;
-        this.vx += (dx / dist) * force * 0.6;
-        this.vy += (dy / dist) * force * 0.6;
+        this.vx += (dx / dist) * force * 0.6 * speedMult;
+        this.vy += (dy / dist) * force * 0.6 * speedMult;
       }
     }
 
@@ -222,4 +229,7 @@ window.particlesSetCount = function(count) {
 window.particlesSetEnabled = function(enabled) {
   particlesEnabled = !!enabled;
   canvas.style.display = particlesEnabled ? 'block' : 'none';
+};
+window.particlesSetAnimationSpeed = function(percent) {
+  animationSpeedMultiplier = Math.max(0.25, Math.min(4, percent / 100));
 };

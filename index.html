@@ -52,7 +52,16 @@
             <span>Background Motion</span>
             <input id="motion-toggle" type="checkbox" checked aria-label="Enable background motion">
           </label>
-        </div>
+        <label for="animation-speed" style="display:flex; justify-content:space-between; align-items:center; gap:0.6rem;">
+          <span>Animation Speed</span>
+          <span id="animation-speed-value" aria-live="polite">100%</span>
+        </label>
+        <input id="animation-speed" type="range" min="25" max="200" step="25" value="100" aria-label="Animation speed">
+
+        <label for="dyslexia-font" style="display:flex; justify-content:space-between; align-items:center; gap:0.6rem;">
+          <span>Dyslexia-Friendly Font</span>
+          <input id="dyslexia-font" type="checkbox" aria-label="Enable dyslexia-friendly font">
+        </label>        </div>
     </div>
   </div>
    <div class="container">

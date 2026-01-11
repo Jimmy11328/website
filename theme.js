@@ -127,12 +127,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const particlesDensity = document.getElementById('particles-density');
   const particlesDensityValue = document.getElementById('particles-density-value');
   const motionToggle = document.getElementById('motion-toggle');
+  const animationSpeed = document.getElementById('animation-speed');
+  const animationSpeedValue = document.getElementById('animation-speed-value');
+  const dyslexiaFont = document.getElementById('dyslexia-font');
 
   const applyFontScale = (percent) => {
     const scale = Math.max(0.6, Math.min(2, percent / 100));
     document.documentElement.style.setProperty('--font-scale', String(scale));
     textSizeValue && (textSizeValue.textContent = `${Math.round(percent)}%`);
     localStorage.setItem('fontScale', String(percent));
+  };
+
+  const applyAnimationSpeed = (percent) => {
+    const speed = Math.max(0.25, Math.min(4, percent / 100));
+    document.documentElement.style.setProperty('--animation-speed', String(speed));
+    animationSpeedValue && (animationSpeedValue.textContent = `${Math.round(percent)}%`);
+    localStorage.setItem('animationSpeed', String(percent));
+    // Update particles speed
+    if (window.particlesSetAnimationSpeed) {
+      try { window.particlesSetAnimationSpeed(percent); } catch {}
+    }
+  };
+
+  const applyDyslexiaFont = (enabled) => {
+    localStorage.setItem('dyslexiaFont', enabled ? 'true' : 'false');
+    if (enabled) {
+      document.body.classList.add('dyslexia-font');
+    } else {
+      document.body.classList.remove('dyslexia-font');
+    }
   };
 
   const applyParticlesEnabled = (enabled) => {
@@ -192,6 +215,16 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem('allowMotion', 'true');
   }
 
+  // restore animation speed
+  const storedAnimSpeed = Number(localStorage.getItem('animationSpeed')) || 100;
+  animationSpeed && (animationSpeed.value = String(storedAnimSpeed));
+  applyAnimationSpeed(storedAnimSpeed);
+
+  // restore dyslexia font
+  const storedDyslexia = localStorage.getItem('dyslexiaFont') === 'true';
+  dyslexiaFont && (dyslexiaFont.checked = storedDyslexia);
+  applyDyslexiaFont(storedDyslexia);
+
 
   // listeners
   textSize && textSize.addEventListener('input', (e) => {
@@ -205,6 +238,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   motionToggle && motionToggle.addEventListener('change', (e) => {
     applyMotionOverride(!!e.target.checked);
+  });
+  animationSpeed && animationSpeed.addEventListener('input', (e) => {
+    applyAnimationSpeed(Number(e.target.value));
+  });
+  dyslexiaFont && dyslexiaFont.addEventListener('change', (e) => {
+    applyDyslexiaFont(!!e.target.checked);
   });
 
   // Soft, transient glow spots that appear/disappear randomly
